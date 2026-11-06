@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071a17">
+  <meta name="description" content="Laboratório Trader Lens do Projeto do Girley: pré-visualização de gráfico e teste histórico de regra sobre candles OHLC.">
+  <title>Trader Lens Lab — Projeto do Girley</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+    :root{color-scheme:dark;--bg:#071a17;--panel:#0d2924;--panel2:#12372f;--line:rgba(190,255,229,.14);--text:#e6fff6;--muted:#a0bbb1;--green:#39ffb6;--green-dark:#062019;--amber:#f6d66b;--red:#ff7e8c;font-family:'Space Grotesk',system-ui,sans-serif}
+    *{box-sizing:border-box}body{margin:0;min-width:320px;background:radial-gradient(ellipse at 76% -12%,#174236 0,transparent 36rem),var(--bg);color:var(--text)}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--text);outline-offset:3px}.app{max-width:800px;margin:auto;padding-bottom:38px}.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;min-height:68px;padding:12px 20px;border-bottom:1px solid var(--line);background:#071a17ed;backdrop-filter:blur(14px)}.brand{display:flex;align-items:center;gap:11px}.logo{display:grid;place-items:center;width:37px;height:37px;border:1px solid var(--green);border-radius:50%;color:var(--green);font-size:20px}.brand b{display:block;font-size:12px;letter-spacing:.16em}.brand small{display:block;margin-top:3px;color:var(--muted);font-size:9px;letter-spacing:.12em}.project-tag,.badge{border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:#c1d8cf;font-size:10px}main{padding:26px 20px}.eyebrow{margin:0 0 9px;color:var(--green);font-size:10px;font-weight:700;letter-spacing:.16em}.hero h1{max-width:650px;margin:0;font-size:clamp(32px,8vw,46px);line-height:1.03;letter-spacing:-.06em}.hero h1 span{color:var(--green)}.lead{max-width:650px;margin:14px 0 18px;color:#b7cec4;font-size:14px;line-height:1.65}.notice{margin:15px 0;padding:13px 14px;border:1px solid rgba(246,214,107,.28);border-radius:12px;background:#f6d66b0b;color:#d2d6c5;font-size:12px;line-height:1.6}.notice strong{color:var(--amber)}.card{margin-top:14px;padding:17px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#12372fd4,#0b241ff0)}.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.card h2{margin:0;font-size:18px;letter-spacing:-.02em}.sub{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.55}.badge{flex:none;border-color:rgba(246,214,107,.35);color:var(--amber);font-size:9px;font-weight:700;letter-spacing:.08em}.preview{position:relative;display:grid;place-items:center;min-height:250px;margin-top:15px;overflow:hidden;border:1px solid rgba(57,255,182,.25);border-radius:15px;background:linear-gradient(135deg,#0b2d25,#061713 80%)}.preview::before,.preview::after{position:absolute;pointer-events:none;content:""}.preview::before{inset:0;background:repeating-linear-gradient(0deg,transparent 0 43px,#39ffb611 44px 45px),repeating-linear-gradient(90deg,transparent 0 43px,#39ffb60b 44px 45px)}.preview::after{inset:17px;border:1px solid #a5ffe029;border-radius:10px}.candles{position:absolute;inset:38px 34px;display:flex;align-items:center;justify-content:space-around;opacity:.68}.candle{position:relative;width:8px;height:38px;border-radius:2px;background:var(--green)}.candle::before{position:absolute;top:-12px;bottom:-12px;left:3px;width:2px;background:inherit;content:""}.candle:nth-child(3n){height:57px;background:var(--red)}.candle:nth-child(4n){height:25px}.candle:nth-child(5n){height:66px}.media{position:absolute;z-index:1;inset:0;width:100%;height:100%;object-fit:contain;background:#061713}.preview video,.preview img{display:none}.preview.has-video video,.preview.has-image img{display:block}.preview.has-video .candles,.preview.has-image .candles{display:none}.preview-status{position:absolute;z-index:2;top:11px;left:13px;right:13px;display:flex;justify-content:space-between;gap:8px;color:#d0e2d9;font-size:9px;letter-spacing:.1em}.placeholder{position:relative;z-index:2;max-width:270px;padding:12px;text-align:center;color:#c0d7ce;font-size:12px;line-height:1.55}.preview.has-video .placeholder,.preview.has-image .placeholder{display:none}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.btn{min-height:44px;padding:10px 13px;border:1px solid rgba(57,255,182,.45);border-radius:10px;background:#39ffb615;color:var(--green);font-size:12px;font-weight:700}.btn-primary{border-color:var(--green);background:var(--green);color:var(--green-dark)}.btn-muted{border-color:var(--line);background:transparent;color:#d3e2dc}.btn[hidden]{display:none}.status{min-height:18px;margin:10px 2px 0;color:var(--muted);font-size:11px;line-height:1.5}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:15px}.field label{display:block;margin-bottom:6px;color:#d2e2db;font-size:11px;font-weight:600}.field input,.field select{width:100%;min-height:42px;padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#071a17;color:var(--text);font-size:12px}.field small{display:block;margin-top:5px;color:#8fa99f;font-size:10px;line-height:1.4}.file-input{display:block;width:100%;padding:11px;border:1px dashed rgba(57,255,182,.4);border-radius:10px;background:#071a17;color:#c5dbd2;font-size:11px}.file-status{margin:8px 0 0;color:#a7c0b6;font-size:11px;line-height:1.5}.csv-help{margin-top:13px;padding:12px;border-radius:10px;background:#071a17;color:#a8c1b7;font-size:10px;line-height:1.65;overflow-wrap:anywhere}.csv-help code{color:var(--green)}.csv-help a{color:var(--green)}.run-row{display:flex;gap:9px;margin-top:14px}.run-row .btn-primary{flex:1}.strategy{margin-top:13px;border-top:1px solid var(--line);padding-top:12px}.strategy summary{color:#c4d8d0;font-size:11px;font-weight:600;cursor:pointer}.strategy ul{margin:9px 0 0;padding-left:19px;color:#a7bdb4;font-size:11px;line-height:1.7}.results{margin-top:15px}.results[hidden]{display:none}.result-meta{margin:0 0 10px;color:#b5c9c0;font-size:11px;line-height:1.5}.metric-panel{margin-top:10px;padding:14px;border:1px solid var(--line);border-radius:13px;background:#071a17}.metric-panel h3{margin:0 0 11px;font-size:13px}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.metric{padding:10px;border:1px solid #ffffff12;border-radius:9px;background:#0b211d}.metric span{display:block;color:#9eb7ad;font-size:9px;line-height:1.4}.metric strong{display:block;margin-top:4px;color:var(--text);font-size:16px;overflow-wrap:anywhere}.metric-note{margin:10px 0 0;color:#a6bbb2;font-size:10px;line-height:1.6}.warn{margin-top:10px;padding:11px 12px;border:1px solid rgba(246,214,107,.24);border-radius:10px;background:#f6d66b0a;color:#d4d5c5;font-size:11px;line-height:1.6}.warn strong{color:var(--amber)}.error{margin-top:11px;padding:11px 12px;border:1px solid #ff7e8c55;border-radius:10px;background:#ff7e8c0d;color:#ffd0d5;font-size:11px;line-height:1.55}.error[hidden]{display:none}.purchase{border-color:rgba(57,255,182,.32)}.price{margin:12px 0 5px;color:var(--green);font-size:32px;font-weight:700;letter-spacing:-.06em}.pix-panel{margin-top:13px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#071a17}.pix-panel[hidden]{display:none}.pix-label{color:var(--green);font-size:9px;font-weight:700;letter-spacing:.12em}.pix-key{display:block;margin:8px 0 11px;padding:12px;border-radius:9px;background:#0d2924;color:var(--text);font-size:17px;font-weight:700;letter-spacing:.04em;overflow-wrap:anywhere;user-select:all}.manual-note{margin:12px 0 0;color:#b7c9c1;font-size:11px;line-height:1.65}.manual-note strong{color:var(--amber)}.footer{margin:22px 3px 0;padding-top:14px;border-top:1px solid var(--line);color:#8da79d;font-size:10px;line-height:1.6;text-align:center}@media(min-width:680px){main{padding:34px 32px}.preview{min-height:330px}.card{padding:20px}.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:390px){.top{padding-inline:15px}main{padding-inline:15px}.actions{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.run-row{flex-direction:column}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand"><span class="logo" aria-hidden="true">⌾</span><div><b>TRADER LENS LAB</b><small>AVALIAÇÃO DE ESTRATÉGIA</small></div></div>
+    <span class="project-tag">Projeto do Girley</span>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">MENOS PALPITE. MAIS TESTE.</p>
+      <h1>Meça a estratégia.<br><span>Não prometa acertos.</span></h1>
+      <p class="lead">Use a câmera para enquadrar o gráfico do computador. Para calcular desempenho histórico, carregue candles OHLC reais exportados da plataforma. O teste roda localmente neste navegador.</p>
+    </section>
+    <div class="notice"><strong>Importante:</strong> uma imagem filmada não basta para provar uma probabilidade. Este protótipo não envia ordens e não prevê o próximo candle; calcula somente um resultado histórico hipotético da regra descrita abaixo, usando os dados que você fornecer.</div>
+
+    <section class="card" aria-labelledby="cameraTitle">
+      <div class="card-head"><div><h2 id="cameraTitle">Câmera do celular</h2><p class="sub">Aponte para a tela do computador para enquadrar o gráfico. A câmera serve como pré-visualização; ela não extrai preços nem alimenta o backtest.</p></div><span class="badge">SÓ PRÉVIA</span></div>
+      <div class="preview" id="preview">
+        <div class="candles" aria-hidden="true"><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i><i class="candle"></i></div>
+        <video class="media" id="cameraVideo" autoplay playsinline muted aria-label="Pré-visualização da câmera do celular"></video>
+        <img class="media" id="selectedImage" alt="Captura do gráfico para pré-visualização">
+        <div class="preview-status"><span id="previewMode">ILUSTRAÇÃO</span><span>SEM ANÁLISE DE IMAGEM</span></div>
+        <div class="placeholder">A imagem do gráfico aparecerá aqui.<br>Ela não será interpretada automaticamente.</div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" id="openCamera" type="button">Abrir câmera</button>
+        <button class="btn" id="chooseImage" type="button">Escolher imagem</button>
+        <button class="btn btn-muted" id="closeCamera" type="button" hidden>Fechar câmera</button>
+        <button class="btn btn-muted" id="clearImage" type="button" hidden>Remover imagem</button>
+      </div>
+      <input class="sr-only" id="imageInput" type="file" accept="image/*" capture="environment">
+      <p class="status" id="mediaStatus" role="status" aria-live="polite">A câmera só abre após sua autorização. HTTPS é necessário para acesso à câmera no navegador.</p>
+    </section>
+
+    <section class="card" aria-labelledby="backtestTitle">
+      <div class="card-head"><div><p class="eyebrow">TESTE HISTÓRICO</p><h2 id="backtestTitle">Avalie uma regra em candles reais</h2><p class="sub">Importe um CSV OHLC da sua plataforma. O arquivo será lido no aparelho e não será enviado a um servidor.</p></div><span class="badge">HIPOTÉTICO</span></div>
+      <div class="form-grid">
+        <div class="field"><label for="asset">Ativo / símbolo (opcional)</label><input id="asset" type="text" maxlength="40" placeholder="Ex.: BTCUSDT, EURUSD, PETR4"><small>Use o nome exibido na plataforma, se souber.</small></div>
+        <div class="field"><label for="timeframe">Período dos candles (opcional)</label><input id="timeframe" type="text" maxlength="20" placeholder="Ex.: 1m, 5m, 1h, diário"><small>O teste não consegue deduzir o intervalo se ele não estiver no arquivo.</small></div>
+        <div class="field"><label for="holdingBars">Barras mantidas por operação</label><input id="holdingBars" type="number" min="1" max="100" step="1" value="3"><small>Saída hipotética no fechamento da última barra.</small></div>
+        <div class="field"><label for="feePct">Comissão por lado (%)</label><input id="feePct" type="number" min="0" max="10" step="0.01" value="0.10"><small>Exemplo inicial; ajuste às tarifas reais do seu mercado.</small></div>
+        <div class="field"><label for="slippageBps">Slippage por lado (pontos-base)</label><input id="slippageBps" type="number" min="0" max="500" step="1" value="5"><small>5 pontos-base = 0,05% por lado. Ajuste com dados reais.</small></div>
+        <div class="field"><label for="csvFile">Arquivo de candles OHLC (.csv)</label><input class="file-input" id="csvFile" type="file" accept=".csv,text/csv"><p class="file-status" id="fileStatus" role="status" aria-live="polite">Nenhum arquivo carregado.</p></div>
+      </div>
+      <div class="csv-help"><strong>Colunas necessárias no cabeçalho:</strong> <code>timestamp, open, high, low, close</code> (volume é opcional). Aceita vírgula, ponto e vírgula ou tabulação como separador. Exporte candles históricos da sua plataforma; uma captura de tela ou dados inventados não servem. <a href="#" id="downloadTemplate">Baixar modelo vazio de CSV</a>.</div>
+      <div class="run-row"><button class="btn btn-primary" id="runBacktest" type="button">Calcular teste histórico</button><button class="btn btn-muted" id="clearResults" type="button">Limpar resultados</button></div>
+      <p class="status" id="calcStatus" role="status" aria-live="polite"></p>
+      <div class="error" id="errorBox" role="alert" hidden></div>
+      <div class="results" id="results" hidden aria-live="polite"><p class="result-meta" id="resultMeta"></p><div id="metricsOutput"></div><div class="warn" id="robustnessNote"></div></div>
+      <details class="strategy"><summary>Ver exatamente a regra e as limitações do teste</summary>
+        <ul>
+          <li>Regra fixa, sem otimização: cruzamento da EMA 9 com a EMA 21; compra simulada quando cruza para cima e RSI 14 está entre 50 e 70; venda simulada quando cruza para baixo e RSI 14 está entre 30 e 50.</li>
+          <li>Sinal calculado no fechamento da barra; entrada hipotética na abertura da barra seguinte; saída no fechamento após o número de barras escolhido. No máximo uma posição hipotética por vez.</li>
+          <li>Os candles são divididos cronologicamente: primeiros 70% para referência (“treino”) e últimos 30% como validação fora da amostra. Uma operação que atravessa a divisão é excluída do treino.</li>
+          <li>Taxa líquida desconta comissão e slippage informados nos dois lados. Também é mostrado um cenário de custos dobrados. Ajuste tributos, spread, funding, aluguel, custos de corretagem e outros itens que se aplicam à sua plataforma; o protótipo não os conhece.</li>
+          <li>A taxa mostrada é a frequência histórica de operações hipotéticas positivas líquidas, não a chance da próxima operação. O intervalo de Wilson é aproximado e não corrige dependência temporal, mudanças de regime ou qualidade ruim dos dados.</li>
+          <li>Não há stop, alvo, gestão de posição, comparação com benchmark, ajuste de dividendos, execução real ou envio de ordens. Não use o resultado como promessa ou recomendação.</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="card purchase" aria-labelledby="purchaseTitle">
+      <p class="eyebrow">ACESSO AO ROBÔ</p><h2 id="purchaseTitle">Adquira por Pix</h2><p class="price">R$ 30</p><p class="sub">Pagamento único. O pagamento e a entrega do acesso são conferidos manualmente.</p>
+      <button class="btn btn-primary" id="buyButton" type="button" aria-expanded="false" aria-controls="pixPanel" style="width:100%;margin-top:13px">Ver chave Pix de R$ 30</button>
+      <div class="pix-panel" id="pixPanel" hidden><span class="pix-label">PIX · CHAVE CELULAR · ITAÚ</span><span class="pix-key" id="pixKey">13982253765</span><button class="btn" id="copyPixKey" type="button" style="width:100%">Copiar chave Pix</button><p class="manual-note"><strong>Pagamento e entrega manuais:</strong> este site não confirma pagamentos automaticamente. Antes de pagar, confira no app do Itaú o nome do destinatário e o valor. Depois, envie o comprovante ao vendedor pelo mesmo canal onde recebeu este site. O link será enviado após a conferência do pagamento.</p></div>
+    </section>
+    <p class="footer">Trader Lens Lab · Projeto do Girley<br>Simulações históricas não garantem resultados futuros.</p>
+  </main>
+</div>
+<script>
+(()=>{
+  const $=id=>document.getElementById(id);
+  const preview=$('preview'), video=$('cameraVideo');
+  let stream=null,imageUrl=null,selectedFile=null;
+  const announce=(id,text)=>$(id).textContent=text;
+
+  function stopCamera(){if(stream){stream.getTracks().forEach(track=>track.stop());stream=null;}video.srcObject=null;preview.classList.remove('has-video');$('closeCamera').hidden=true;}
+  function clearImage(){if(imageUrl){URL.revokeObjectURL(imageUrl);imageUrl=null;}$('selectedImage').removeAttribute('src');preview.classList.remove('has-image');$('clearImage').hidden=true;}
+  $('openCamera').addEventListener('click',async()=>{
+    if(!navigator.mediaDevices?.getUserMedia){announce('mediaStatus','Este navegador não oferece acesso à câmera. Você pode escolher uma imagem.');return;}
+    if(!window.isSecureContext){announce('mediaStatus','A câmera exige que a página esteja em HTTPS. Você ainda pode importar o CSV para testar.');return;}
+    try{stopCamera();clearImage();stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});video.srcObject=stream;preview.classList.add('has-video');$('previewMode').textContent='CÂMERA AO VIVO · SEM ANÁLISE';$('closeCamera').hidden=false;announce('mediaStatus','Pré-visualização ativa. Nenhuma leitura de candle ou probabilidade é extraída da câmera.');}
+    catch(error){announce('mediaStatus','Não foi possível abrir a câmera. Verifique a permissão do navegador ou escolha uma imagem.');}
+  });
+  $('closeCamera').addEventListener('click',()=>{stopCamera();$('previewMode').textContent='ILUSTRAÇÃO';announce('mediaStatus','Câmera fechada.');});
+  $('chooseImage').addEventListener('click',()=>$('imageInput').click());
+  $('imageInput').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;if(!file.type.startsWith('image/')){announce('mediaStatus','Escolha um arquivo de imagem válido.');e.target.value='';return;}stopCamera();clearImage();imageUrl=URL.createObjectURL(file);$('selectedImage').src=imageUrl;preview.classList.add('has-image');$('previewMode').textContent='IMAGEM · SEM ANÁLISE';$('clearImage').hidden=false;announce('mediaStatus','Imagem exibida como pré-visualização; ela não é interpretada pelo sistema.');e.target.value='';});
+  $('clearImage').addEventListener('click',()=>{clearImage();$('previewMode').textContent='ILUSTRAÇÃO';announce('mediaStatus','Imagem removida.');});
+  window.addEventListener('pagehide',stopCamera);
+
+  function csvParse(text){
+    const clean=text.replace(/^\uFEFF/,'');
+    const first=clean.split(/\r?\n/,1)[0]||'';
+    const counts={',':0,';':0,'\t':0};let quoted=false;
+    for(let i=0;i<first.length;i++){if(first[i]==='"'){if(quoted&&first[i+1]==='"'){i++;continue;}quoted=!quoted;}else if(!quoted&&Object.hasOwn(counts,first[i]))counts[first[i]]++;}
+    const delimiter=Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];
+    const rows=[];let row=[],cell='',inQuotes=false;
+    for(let i=0;i<clean.length;i++){
+      const ch=clean[i];
+      if(ch==='"'){if(inQuotes&&clean[i+1]==='"'){cell+='"';i++;}else inQuotes=!inQuotes;}
+      else if(ch===delimiter&&!inQuotes){row.push(cell.trim());cell='';}
+      else if((ch==='\n'||ch==='\r')&&!inQuotes){if(ch==='\r'&&clean[i+1]==='\n')i++;row.push(cell.trim());cell='';if(row.some(x=>x!==''))rows.push(row);row=[];}
+      else cell+=ch;
+    }
+    row.push(cell.trim());if(row.some(x=>x!==''))rows.push(row);
+    return {rows,delimiter};
+  }
+  function normHeader(s){return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');}
+  function parseNumber(raw){
+    let s=String(raw??'').trim().replace(/[\s\u00a0]/g,'').replace(/[R$€£]/g,'');
+    if(!s||s==='-'||s.toLowerCase()==='null')return NaN;
+    if(s.includes(',')&&s.includes('.')){if(s.lastIndexOf(',')>s.lastIndexOf('.'))s=s.replace(/\./g,'').replace(',','.');else s=s.replace(/,/g,'');}
+    else if(s.includes(','))s=s.replace(',','.');
+    const n=Number(s);return Number.isFinite(n)?n:NaN;
+  }
+  function parseDate(raw){
+    const s=String(raw??'').trim();if(!s)return null;
+    if(/^\d+(?:\.\d+)?$/.test(s)){const n=Number(s);if(n>1e12)return n;if(n>1e9)return n*1000;return null;}
+    const br=s.match(/^(\d{1,2})[/.](\d{1,2})[/.](\d{2,4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+    if(br){let y=Number(br[3]);if(y<100)y+=y<70?2000:1900;return new Date(y,Number(br[2])-1,Number(br[1]),Number(br[4]||0),Number(br[5]||0),Number(br[6]||0)).getTime();}
+    const t=Date.parse(s);return Number.isFinite(t)?t:null;
+  }
+  function loadBars(text){
+    const {rows}=csvParse(text);if(rows.length<3)throw new Error('O CSV parece vazio. Ele precisa ter um cabeçalho e pelo menos duas linhas de candles.');
+    const headers=rows[0].map(normHeader);
+    const find=names=>headers.findIndex(h=>names.includes(h));
+    const ix={time:find(['timestamp','datetime','date','time','datatime']),open:find(['open','o','abertura']),high:find(['high','h','maxima','maximo']),low:find(['low','l','minima','minimo']),close:find(['close','c','fechamento','ultimo','last'])};
+    const required=['open','high','low','close'];const missing=required.filter(k=>ix[k]<0);
+    if(missing.length)throw new Error('Não encontrei as colunas obrigatórias: '+missing.join(', ')+'. Use cabeçalhos open, high, low e close; timestamp/data é recomendado.');
+    const bars=[];let skipped=0;
+    for(let r=1;r<rows.length;r++){
+      const cells=rows[r];const o=parseNumber(cells[ix.open]),h=parseNumber(cells[ix.high]),l=parseNumber(cells[ix.low]),c=parseNumber(cells[ix.close]);
+      if(![o,h,l,c].every(Number.isFinite)||Math.min(o,h,l,c)<=0||h<Math.max(o,c)||l>Math.min(o,c)||h<l){skipped++;continue;}
+      const time=ix.time>=0?parseDate(cells[ix.time]):null;
+      bars.push({open:o,high:h,low:l,close:c,time,sourceRow:r+1});
+    }
+    if(bars.length<100)throw new Error(`Só encontrei ${bars.length} candles válidos. Para este teste exploratório, carregue ao menos 100 barras OHLC corretas.`);
+    if(bars.every(b=>b.time!==null))bars.sort((a,b)=>a.time-b.time);
+    for(let i=1;i<bars.length;i++)if(bars[i].time!==null&&bars[i-1].time!==null&&bars[i].time===bars[i-1].time)throw new Error('Há timestamps duplicados. Confira se o CSV contém um único ativo e um único candle por horário.');
+    return {bars,skipped,hasTime:bars.every(b=>b.time!==null)};
+  }
+  function ema(values,period){const out=new Array(values.length).fill(null),alpha=2/(period+1);let value=values[0];out[0]=value;for(let i=1;i<values.length;i++){value=values[i]*alpha+value*(1-alpha);out[i]=value;}return out;}
+  function rsiWilder(values,period=14){const out=new Array(values.length).fill(null);if(values.length<=period)return out;let gain=0,loss=0;for(let i=1;i<=period;i++){const d=values[i]-values[i-1];gain+=Math.max(d,0);loss+=Math.max(-d,0);}let ag=gain/period,al=loss/period;const calc=()=>al===0?(ag===0?50:100):100-(100/(1+ag/al));out[period]=calc();for(let i=period+1;i<values.length;i++){const d=values[i]-values[i-1];ag=(ag*(period-1)+Math.max(d,0))/period;al=(al*(period-1)+Math.max(-d,0))/period;out[i]=calc();}return out;}
+  function wilson(wins,n){if(!n)return [0,0];const z=1.96,p=wins/n,z2=z*z,den=1+z2/n,mid=(p+z2/(2*n))/den,rad=z*Math.sqrt((p*(1-p)/n)+z2/(4*n*n))/den;return [Math.max(0,mid-rad),Math.min(1,mid+rad)];}
+  function runTrades(bars,split,holding,from,to){
+    const closes=bars.map(b=>b.close),fast=ema(closes,9),slow=ema(closes,21),rsi=rsiWilder(closes,14),trades=[];let lastExit=-1;
+    for(let i=Math.max(60,from);i<to;i++){
+      if(i<=lastExit||i+holding>=bars.length)continue;
+      const crossUp=fast[i-1]<=slow[i-1]&&fast[i]>slow[i];
+      const crossDown=fast[i-1]>=slow[i-1]&&fast[i]<slow[i];
+      let side=0;if(crossUp&&rsi[i]>=50&&rsi[i]<70)side=1;else if(crossDown&&rsi[i]<=50&&rsi[i]>30)side=-1;
+      if(!side)continue;
+      const entryIndex=i+1,exitIndex=i+holding;
+      if(entryIndex>=bars.length||exitIndex>=bars.length)continue;
+      if(from===60&&exitIndex>=split)continue;
+      const entry=bars[entryIndex].open,exit=bars[exitIndex].close;if(!(entry>0))continue;
+      trades.push({side,grossPct:side*((exit-entry)/entry)*100,entryIndex,exitIndex});lastExit=exitIndex;
+    }
+    return trades;
+  }
+  function stats(trades,feePct,slippageBps,costMultiplier=1){
+    const roundTripCost=2*(feePct+slippageBps/100)*costMultiplier;
+    const returns=trades.map(t=>t.grossPct-roundTripCost);const wins=returns.filter(r=>r>0).length,losses=returns.filter(r=>r<0).length,n=returns.length;
+    const sumWin=returns.filter(r=>r>0).reduce((a,b)=>a+b,0),sumLoss=Math.abs(returns.filter(r=>r<0).reduce((a,b)=>a+b,0));
+    const ci=wilson(wins,n);return {n,wins,winRate:n?wins/n:0,low:ci[0],high:ci[1],avg:n?returns.reduce((a,b)=>a+b,0)/n:0,profitFactor:sumLoss?sumWin/sumLoss:null,roundTripCost,losses};
+  }
+  const pct=x=>new Intl.NumberFormat('pt-BR',{style:'percent',minimumFractionDigits:1,maximumFractionDigits:1}).format(x);
+  const num=(x,d=2)=>new Intl.NumberFormat('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d}).format(x);
+  function metric(label,value){const box=document.createElement('div');box.className='metric';const l=document.createElement('span'),v=document.createElement('strong');l.textContent=label;v.textContent=value;box.append(l,v);return box;}
+  function makePanel(title,s,extra){
+    const article=document.createElement('article');article.className='metric-panel';const h=document.createElement('h3');h.textContent=title;article.append(h);
+    const grid=document.createElement('div');grid.className='metrics';
+    const observed=s.n?`${pct(s.winRate)} (${s.wins}/${s.n})`:'Sem operações';
+    const ci=s.n?`${pct(s.low)} – ${pct(s.high)}`:'Não calculável';
+    grid.append(metric('Operações hipotéticas',String(s.n)),metric('Positivas líquidas',observed),metric('IC aproximado de 95%',ci),metric('Média líquida / operação',s.n?`${num(s.avg)}%`:'—'));
+    grid.append(metric('Fator de lucro líquido',s.profitFactor===null?(s.n?'Sem perdas na amostra':'—'):num(s.profitFactor)),metric('Custo ida e volta aplicado',`${num(s.roundTripCost)}%`));article.append(grid);
+    const p=document.createElement('p');p.className='metric-note';p.textContent=extra;article.append(p);return article;
+  }
+  function displayResults(parsed,split,trainTrades,testTrades,meta,holding,fee,slip){
+    const baseTest=stats(testTrades,fee,slip,1),stressTest=stats(testTrades,fee,slip,2),train=stats(trainTrades,fee,slip,1);
+    const start=parsed.hasTime?new Date(parsed.bars[0].time).toLocaleString('pt-BR'):'primeira linha do arquivo';
+    const end=parsed.hasTime?new Date(parsed.bars.at(-1).time).toLocaleString('pt-BR'):'última linha do arquivo';
+    const asset=meta.asset||'ativo não informado',tf=meta.timeframe||'período não informado';
+    $('resultMeta').textContent=`Ativo: ${asset} · Candle: ${tf} · ${parsed.bars.length} candles válidos${parsed.skipped?` · ${parsed.skipped} linhas inválidas ignoradas`:''} · período: ${start} até ${end}. Divisão cronológica: ${split} candles de referência e ${parsed.bars.length-split} de validação.`;
+    const output=$('metricsOutput');output.replaceChildren();
+    output.append(makePanel('Referência — primeiros 70% dos dados',train,`Frequência histórica líquida calculada na parte inicial do arquivo. Não é previsão. Regra fixa EMA 9/21 + RSI 14; entrada na abertura seguinte; saída após ${holding} candle(s).`));
+    output.append(makePanel('Validação fora da amostra — últimos 30%',baseTest,`Resultado histórico líquido antes de dobrar custos. A faixa de Wilson é binomial aproximada e não incorpora dependência entre operações nem mudança de regime.`));
+    output.append(makePanel('Validação sob estresse — custos dobrados',stressTest,`Mesmo conjunto de operações, com comissão e slippage por lado multiplicados por 2. Isso é apenas um cenário de estresse, não uma previsão.`));
+    const warnings=[];
+    if(baseTest.n<30)warnings.push(`A validação tem ${baseTest.n} operação(ões); menos de 30 é uma amostra muito pequena. A taxa observada não sustenta uma conclusão confiável.`);
+    else if(baseTest.n<100)warnings.push(`A validação tem ${baseTest.n} operações; tente obter pelo menos 100 operações fora da amostra e incluir diferentes regimes de mercado.`);
+    if(!train.n||!baseTest.n)warnings.push('A regra não gerou operações em uma das amostras. Isso não significa que outra operação teria maior chance de acerto.');
+    if(baseTest.n&&train.n&&Math.abs(baseTest.winRate-train.winRate)>.15)warnings.push('A taxa da validação difere em mais de 15 pontos percentuais da referência. Isso pode indicar mudança de regime ou fragilidade; não escolha parâmetros olhando apenas a parte de validação.');
+    if(fee===0||slip===0)warnings.push('Um dos custos foi informado como zero. Confirme comissão, spread e slippage reais; custos omitidos podem mudar o resultado líquido.');
+    warnings.push('Interprete primeiro a média líquida e o cenário de custos dobrados, não apenas a taxa de acerto. Uma estratégia pode acertar muitas vezes e ainda perder dinheiro quando as perdas são maiores.');
+    $('robustnessNote').replaceChildren();const strong=document.createElement('strong');strong.textContent='Como interpretar: ';$('robustnessNote').append(strong,document.createTextNode(warnings.join(' ')));
+    $('results').hidden=false;$('results').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  $('csvFile').addEventListener('change',e=>{selectedFile=e.target.files?.[0]||null;announce('fileStatus',selectedFile?`${selectedFile.name} · ${(selectedFile.size/1024).toFixed(0)} KB`:'Nenhum arquivo carregado.');$('results').hidden=true;$('errorBox').hidden=true;});
+  $('runBacktest').addEventListener('click',async()=>{
+    $('errorBox').hidden=true;$('results').hidden=true;
+    if(!selectedFile){$('errorBox').textContent='Selecione um CSV OHLC exportado da plataforma antes de calcular.';$('errorBox').hidden=false;return;}
+    if(selectedFile.size>15*1024*1024){$('errorBox').textContent='O arquivo excede 15 MB. Exporte um período menor ou divida os dados.';$('errorBox').hidden=false;return;}
+    const holding=Number($('holdingBars').value),fee=Number($('feePct').value),slip=Number($('slippageBps').value);
+    if(!Number.isInteger(holding)||holding<1||holding>100||!Number.isFinite(fee)||fee<0||fee>10||!Number.isFinite(slip)||slip<0||slip>500){$('errorBox').textContent='Confira os parâmetros: barras entre 1 e 100, comissão entre 0 e 10% por lado e slippage entre 0 e 500 pontos-base por lado.';$('errorBox').hidden=false;return;}
+    $('runBacktest').disabled=true;announce('calcStatus','Lendo o CSV e calculando indicadores neste aparelho…');
+    try{
+      const text=await selectedFile.text();const parsed=loadBars(text);const bars=parsed.bars;const split=Math.floor(bars.length*.7);
+      if(split<70||bars.length-split<25)throw new Error('O arquivo precisa ter mais candles para formar as partes cronológicas de referência e validação.');
+      const trainTrades=runTrades(bars,split,holding,60,split);
+      const testTrades=runTrades(bars,split,holding,Math.max(60,split),bars.length-holding);
+      displayResults(parsed,split,trainTrades,testTrades,{asset:$('asset').value.trim(),timeframe:$('timeframe').value.trim()},holding,fee,slip);
+      announce('calcStatus','Cálculo concluído localmente. Resultado histórico hipotético — não é sinal ao vivo.');
+    }catch(error){$('errorBox').textContent=error instanceof Error?error.message:'Não foi possível ler o arquivo. Confira se é um CSV OHLC válido.';$('errorBox').hidden=false;announce('calcStatus','');}
+    finally{$('runBacktest').disabled=false;}
+  });
+  $('clearResults').addEventListener('click',()=>{$('results').hidden=true;$('errorBox').hidden=true;announce('calcStatus','Resultados apagados.');});
+  $('downloadTemplate').addEventListener('click',e=>{e.preventDefault();const blob=new Blob(['timestamp,open,high,low,close,volume\n'],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='modelo_candles_OHLC.csv';a.click();URL.revokeObjectURL(url);});
+  $('buyButton').addEventListener('click',()=>{const panel=$('pixPanel'),open=panel.hidden;panel.hidden=!open;$('buyButton').setAttribute('aria-expanded',String(open));$('buyButton').textContent=open?'Ocultar dados do Pix':'Ver chave Pix de R$ 30';if(open)panel.scrollIntoView({behavior:'smooth',block:'nearest'});});
+  $('copyPixKey').addEventListener('click',async()=>{const key=$('pixKey').textContent.trim();try{await navigator.clipboard.writeText(key);$('copyPixKey').textContent='Chave copiada — confira o destinatário no Itaú';}catch(error){const field=document.createElement('textarea');field.value=key;field.setAttribute('readonly','');field.style.position='fixed';field.style.opacity='0';document.body.appendChild(field);field.select();const ok=document.execCommand('copy');field.remove();$('copyPixKey').textContent=ok?'Chave copiada — confira o destinatário no Itaú':'Copie a chave selecionando o número';}});
+})();
+</script>
+</body>
+</html>
